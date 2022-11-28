@@ -86,8 +86,24 @@
       <button>Trigger a Global Error</button>
     </section>
   </main>
-
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && TrackJS.install({
+      token: "0f63cca1d1924d95805f92c20a8750e6"
+    });
+  </script>
+  <script>
+    window.onerror = function (message, url, line, col, error) {
+      console.error("An error has occured.");
+    };
+
+    class ArithmeticError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "ArithmeticError";
+      }
+    }
+
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -95,13 +111,62 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      let result = "NaN";
+
+      // try/catch used for step 3
+      //try {
+      if (secondNum == 0 && operator == "/") {
+        throw new ArithmeticError("Attempted to divide by zero");
+      }
+      result = eval(`${firstNum} ${operator} ${secondNum}`);
+      //} catch (err) {
+      //  alert(err.name + "\n" + err.message);
+      //} finally {
+      output.innerHTML = result;
+      //}
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+
+    // Log
+    errorBtns[0].addEventListener('click', () => { console.log('Console Log Demo') });
+    // Error
+    errorBtns[1].addEventListener('click', () => { console.error('Console Error Demo') });
+    // Count
+    errorBtns[2].addEventListener('click', () => { console.count('Console Count Demo') });
+    // Warn
+    errorBtns[3].addEventListener('click', () => { console.warn('Console Warn Demo') });
+    // Assert
+    errorBtns[4].addEventListener('click', () => { console.assert(0 == 1, 'Console Assert Demo') });
+    // Clear
+    errorBtns[5].addEventListener('click', () => { console.clear() });
+    // Dir
+    errorBtns[6].addEventListener('click', () => { console.dir(document.head) });
+    // Dirxml
+    errorBtns[7].addEventListener('click', () => { console.dirxml(document) });
+    // Group Start
+    errorBtns[8].addEventListener('click', () => { console.group('Console Group Demo') });
+    // Group End
+    errorBtns[9].addEventListener('click', () => { console.groupEnd('Console Group Demo') });
+    // Table
+    errorBtns[10].addEventListener('click', () => { console.table(['Console', 'Group', 'Demo']) });
+    // Start Timer
+    errorBtns[11].addEventListener('click', () => { console.time() });
+    // End Timer
+    errorBtns[12].addEventListener('click', () => { console.timeEnd() });
+    // Trace
+    const Demo1 = () => { Trace2(); };
+    const Trace2 = () => { Console3(); };
+    const Console3 = () => { console.trace(); };
+    errorBtns[13].addEventListener('click', () => { Demo1() });
+    // Global Error
+    errorBtns[14].addEventListener('click', () => { nonexistentFunction() });
+    // Alternate version with try/catch
+    //errorBtns[14].addEventListener('click', () => {
+    //  try {nonexistentFunction()} catch {alert("This function does not exist")} });
   </script>
 </body>
 
